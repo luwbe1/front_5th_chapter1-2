@@ -6,6 +6,8 @@ import { ForbiddenError, UnauthorizedError } from "./errors";
 import { router } from "./router";
 import { render } from "./render";
 
+// TEST
+
 router.set(
   createRouter({
     "/": HomePage,
