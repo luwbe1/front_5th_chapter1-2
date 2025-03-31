@@ -1,4 +1,5 @@
 // import { addEvent } from "./eventManager";
+import { normalizeVNode } from "./normalizeVNode";
 
 export function createElement(vNode) {
   if (
@@ -20,18 +21,35 @@ export function createElement(vNode) {
     return fragment;
   }
 
-  const el = document.createElement(vNode.type);
-  //   updateAttributes(el, vNode.props);
+  // 컴포넌트가 직접 전달되면 예외 발생
+  if (typeof vNode.type === "function") {
+    throw new Error("createElement()에 컴포넌트를 직접 전달할 수 없습니다.");
+  }
+
+  const normalizedNode = normalizeVNode(vNode);
+
+  const el = document.createElement(normalizedNode.type);
+
+  updateAttributes(el, normalizedNode.props);
+
+  const children = normalizedNode.children.map(createElement);
+
+  children.forEach((child) => el.appendChild(child));
 
   return el;
 }
 
-// function updateAttributes($el, props) {
-//   Object.entries(props || {})
-//     .filter(([attr, value]) => value)
-//     .forEach(([attr, value]) => $el.setAttribute(attr, value));
-//   const children = props.children.map(createElement);
-//   // $el에 변환된 children dom을 추가한다.
-//   children.forEach((child) => $el.appendChild(child));
-//   return $el;
-// }
+function updateAttributes($el, props) {
+  if (!props) return;
+
+  Object.entries(props).forEach(([attr, value]) => {
+    if (!value) return;
+
+    // className을 class로 변경
+    if (attr === "className") {
+      $el.setAttribute("class", value);
+    } else {
+      $el.setAttribute(attr, value);
+    }
+  });
+}
