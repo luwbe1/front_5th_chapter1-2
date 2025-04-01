@@ -8,26 +8,20 @@ export function renderElement(vNode, container) {
   // 이후에는 updateElement로 기존 DOM을 업데이트한다.
   // 렌더링이 완료되면 container에 이벤트를 등록한다.
 
-  // vNode가 null이면 container의 innerHTML을 ""로 초기화한다.
   if (!vNode) {
     container.innerHTML = "";
     return;
   }
-  // vNode가 null이 아니면 vNode를 normalizeVNode로 정규화한다.
+
   vNode = normalizeVNode(vNode);
+  const oldVNode = container.vNode;
 
-  // vNode가 DOM이 아니면 vNode를 createElement로 DOM으로 변환한다.
-  const oldNode = container.firstChild;
-  const newElement = createElement(vNode);
-
-  // vNode가 DOM이면 vNode를 createElement로 DOM으로 변환한다.
-  if (oldNode) {
-    updateElement(oldNode, oldNode.vNode, vNode);
-    container.replaceChild(newElement, oldNode);
+  if (!oldVNode) {
+    container.appendChild(createElement(vNode));
   } else {
-    container.appendChild(newElement);
+    updateElement(container, vNode, oldVNode);
   }
 
-  // 이벤트 핸들러를 위임 방식으로 등록
-  setupEventListeners(container); // 부모 요소인 container에 이벤트를 위임
+  container.vNode = vNode;
+  setupEventListeners(container);
 }
