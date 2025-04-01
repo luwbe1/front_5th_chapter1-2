@@ -42,7 +42,7 @@ function updateAttributes($el, props) {
   Object.entries(props).forEach(([attr, value]) => {
     if (value == null || value === false) return;
 
-    if (attr === "className") {
+    if (attr.toLowerCase() === "classname") {
       $el.setAttribute("class", value);
     } else if (attr.startsWith("on")) {
       if (typeof value === "function") {
