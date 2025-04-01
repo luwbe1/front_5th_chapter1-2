@@ -1,3 +1,4 @@
+import { addEvent } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
 
 export function createElement(vNode) {
@@ -39,17 +40,15 @@ function updateAttributes($el, props) {
   if (!props) return;
 
   Object.entries(props).forEach(([attr, value]) => {
-    if (!value) return;
+    if (value == null || value === false) return;
 
-    if (attr.toLowerCase() === "classname") {
+    if (attr === "className") {
       $el.setAttribute("class", value);
     } else if (attr.startsWith("on")) {
-      if (typeof value !== "function") {
-        return;
+      if (typeof value === "function") {
+        const eventType = attr.slice(2).toLowerCase();
+        addEvent($el, eventType, value);
       }
-
-      const eventType = attr.slice(2).toLowerCase();
-      $el.addEventListener(eventType, value);
     } else {
       $el.setAttribute(attr, value);
     }
