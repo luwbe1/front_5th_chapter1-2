@@ -1,4 +1,3 @@
-// import { addEvent } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
 
 export function createElement(vNode) {
@@ -27,13 +26,10 @@ export function createElement(vNode) {
   }
 
   const normalizedNode = normalizeVNode(vNode);
-
   const el = document.createElement(normalizedNode.type);
-
   updateAttributes(el, normalizedNode.props);
 
   const children = normalizedNode.children.map(createElement);
-
   children.forEach((child) => el.appendChild(child));
 
   return el;
@@ -45,9 +41,15 @@ function updateAttributes($el, props) {
   Object.entries(props).forEach(([attr, value]) => {
     if (!value) return;
 
-    // className을 class로 변경
-    if (attr === "className") {
+    if (attr.toLowerCase() === "classname") {
       $el.setAttribute("class", value);
+    } else if (attr.startsWith("on")) {
+      if (typeof value !== "function") {
+        return;
+      }
+
+      const eventType = attr.slice(2).toLowerCase();
+      $el.addEventListener(eventType, value);
     } else {
       $el.setAttribute(attr, value);
     }
