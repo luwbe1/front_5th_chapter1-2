@@ -12,6 +12,8 @@ import { globalStore } from "../stores";
  */
 export const HomePage = () => {
   const { posts, loggedIn, currentUser } = globalStore.getState();
+  const activationLike =
+    currentUser && props.likeUsers.includes(currentUser?.username);
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center">
@@ -25,9 +27,6 @@ export const HomePage = () => {
             {[...posts]
               .sort((a, b) => b.time - a.time)
               .map((props) => {
-                const activationLike =
-                  loggedIn && props.likeUsers.includes(currentUser?.username);
-
                 return <Post {...props} activationLike={activationLike} />;
               })}
           </div>

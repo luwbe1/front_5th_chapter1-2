@@ -11,11 +11,16 @@ export const Post = ({
   likeUsers,
   activationLike = false,
 }) => {
+  const { loggedIn } = globalStore.getState();
   const { likeUser } = globalStore.actions;
 
   const onLikeUser = (e) => {
     e.preventDefault();
-    likeUser(id);
+    if (!loggedIn) {
+      alert("로그인 후 이용해주세요");
+    } else {
+      likeUser(id);
+    }
   };
 
   return (

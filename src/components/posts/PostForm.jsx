@@ -3,14 +3,16 @@ import { createVNode } from "../../lib";
 import { globalStore } from "../../stores";
 
 export const PostForm = () => {
+  const { loggedIn } = globalStore.getState();
   const { addPost } = globalStore.actions;
 
-  const onUpload = (e) => {
-    e.preventDefault();
-
+  const onUpload = () => {
     const content = document.getElementById("post-content").value;
-
-    addPost(content);
+    if (loggedIn) {
+      addPost(content);
+    } else {
+      alert("로그인 후 이용해주세요");
+    }
   };
 
   return (

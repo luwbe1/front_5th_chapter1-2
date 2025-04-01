@@ -54,37 +54,34 @@ export const globalStore = createStore(
       return { ...state, currentUser: null, loggedIn: false };
     },
     addPost(state, content) {
-      if (!state.loggedIn) {
-        alert("로그인 후 사용해주세요");
-      } else {
-        const newPost = {
-          id: state.posts.length + 1,
-          author: state.currentUser?.username,
-          time: Date.now(),
-          content,
-          likeUsers: [],
-        };
-        return { ...state, posts: [...state.posts, newPost] };
-      }
+      const newPost = {
+        id: state.posts.length + 1,
+        author: state.currentUser?.username,
+        time: Date.now(),
+        content,
+        likeUsers: [],
+      };
+      return { ...state, posts: [...state.posts, newPost] };
     },
     likeUser(state, id) {
-      if (!state.loggedIn) {
-        alert("로그인 후 사용해주세요");
-      } else {
-        const post = state.posts.find((post) => post.id === id);
-        if (!post) return;
+      const postIndex = state.posts.findIndex((post) => post.id === id);
+      if (postIndex === -1) return state;
 
-        const userIndex = post.likeUsers.indexOf(state.currentUser?.username);
-        if (userIndex !== -1) {
-          // 사용자가 이미 좋아요를 눌렀다면 제거
-          post.likeUsers = post.likeUsers.filter(
-            (user) => user !== state.currentUser?.username,
-          );
-        } else {
-          // 사용자가 좋아요를 누르지 않았다면 추가
-          post.likeUsers.push(state.currentUser?.username);
-        }
+      const updatedPosts = [...state.posts];
+      const post = { ...updatedPosts[postIndex] };
+      const username = state.currentUser?.username;
+      if (!username) return state;
+
+      // 좋아요가 이미 있다면 취소하고, 없다면 추가
+      if (post.likeUsers.includes(username)) {
+        post.likeUsers = post.likeUsers.filter((user) => user !== username);
+      } else {
+        post.likeUsers = [...post.likeUsers, username]; // push 대신 불변성 유지
       }
+
+      updatedPosts[postIndex] = post;
+
+      return { ...state, posts: updatedPosts };
     },
   },
 );
