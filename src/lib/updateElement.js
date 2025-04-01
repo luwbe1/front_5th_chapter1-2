@@ -1,4 +1,4 @@
-// import { addEvent, removeEvent } from "./eventManager";
+import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
@@ -6,20 +6,31 @@ function updateAttributes(target, originNewProps, originOldProps) {
     if (originOldProps[attr] === originNewProps[attr]) {
       continue;
     }
-    target.setAttribute(attr, value);
+
+    if (attr.startsWith("on")) {
+      const eventType = attr.slice(2).toLowerCase();
+      removeEvent(target, eventType, originOldProps[attr]); // 기존 이벤트 제거
+      addEvent(target, eventType, value); // 새로운 이벤트 추가
+    } else {
+      target.setAttribute(attr, value);
+    }
   }
 
   for (const attr of Object.keys(originOldProps)) {
-    if (originNewProps[attr] !== undefined) {
-      continue;
+    if (originNewProps[attr] !== undefined) continue;
+
+    if (attr.startsWith("on")) {
+      const eventType = attr.slice(2).toLowerCase();
+      removeEvent(target, eventType, originOldProps[attr]);
+    } else {
+      target.removeAttribute(attr);
     }
-    target.removeAttribute(attr);
   }
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
   if (!newNode && oldNode) {
-    return parentElement.removeChild(parent.childNode[index]);
+    return parentElement.removeChild(parentElement.childNodes[index]);
   }
 
   if (newNode && !oldNode) {
