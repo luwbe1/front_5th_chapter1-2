@@ -2,12 +2,14 @@
 import { createVNode } from "../../lib";
 import { router } from "../../router";
 import { globalStore } from "../../stores";
+import { BASE_PATH } from "../../constants/constants";
 
 const getNavItemClass = (path) => {
-  const currentPath = window.location.hash
-    ? window.location.hash.slice(1) || "/"
-    : window.location.pathname;
-  return currentPath === path ? "text-blue-600 font-bold" : "text-gray-600";
+  let currentPath = window.location.pathname;
+
+  return currentPath === BASE_PATH + path
+    ? "text-blue-600 font-bold"
+    : "text-gray-600";
 };
 
 function Link({ onClick, children, ...props }) {

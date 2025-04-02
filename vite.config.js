@@ -1,6 +1,7 @@
 import { defineConfig as defineTestConfig, mergeConfig } from "vitest/config";
 import { defineConfig } from "vite";
 import { resolve } from "path";
+import { BASE_PATH } from "./src/constants/constants";
 
 export default mergeConfig(
   defineConfig({
@@ -21,7 +22,7 @@ export default mergeConfig(
         },
       },
     },
-    base: "/front-5th-chapter1-2/",
+    base: BASE_PATH + "/",
   }),
   defineTestConfig({
     test: {
