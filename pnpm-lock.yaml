@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      gh-pages:
-        specifier: ^6.3.0
-        version: 6.3.0
     devDependencies:
       '@babel/core':
         specifier: ^7.26.0
@@ -48,6 +44,9 @@ importers:
       eslint-plugin-prettier:
         specifier: ^5.2.1
         version: 5.2.5(eslint-config-prettier@9.1.0(eslint@9.23.0))(eslint@9.23.0)(prettier@3.5.3)
+      gh-pages:
+        specifier: ^6.3.0
+        version: 6.3.0
       globals:
         specifier: ^15.13.0
         version: 15.15.0
