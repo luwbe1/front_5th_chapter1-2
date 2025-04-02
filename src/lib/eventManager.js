@@ -1,40 +1,41 @@
-const eventMap = new Map();
+const eventMap = new WeakMap(); // 요소별 이벤트 저장소
+const eventTypes = new Set(); // 등록된 이벤트 타입 저장소
 
 export function setupEventListeners(root) {
-  const delegatedEvents = ["click", "mouseover", "focus", "keydown"];
-
-  delegatedEvents.forEach((eventType) => {
-    root.addEventListener(eventType, (event) => {
-      let target = event.target;
-      while (target && target !== root) {
-        // 타겟 요소에서 이벤트 핸들러 찾기
-        if (eventMap.has(target) && eventMap.get(target)[eventType]) {
-          eventMap.get(target)[eventType](event); // 핸들러 실행
-        }
-        target = target.parentElement; // 부모 요소로 올라가기
-      }
-    });
+  eventTypes.forEach((eventType) => {
+    root.addEventListener(eventType, handleEvent);
   });
+}
+
+// 이벤트 위임 핸들러
+function handleEvent(event) {
+  let target = event.target;
+  while (target) {
+    const elementEvents = eventMap.get(target);
+    if (elementEvents && elementEvents.has(event.type)) {
+      elementEvents.get(event.type).call(target, event);
+      break; // 이벤트가 처리되었으면 중단
+    }
+    target = target.parentElement;
+  }
 }
 
 export function addEvent(element, eventType, handler) {
   if (!eventMap.has(element)) {
-    eventMap.set(element, {});
+    eventMap.set(element, new Map());
   }
-  const elementHandlers = eventMap.get(element);
-
-  // 이미 해당 이벤트 핸들러가 등록되어 있으면 등록하지 않음
-  if (elementHandlers[eventType]) {
-    return; // 이미 이벤트가 등록되었으면 리턴
-  }
-
-  // 핸들러를 해당 이벤트 타입에 추가
-  elementHandlers[eventType] = handler;
+  const elementEvents = eventMap.get(element);
+  elementEvents.set(eventType, handler);
+  eventTypes.add(eventType); // 이벤트 타입 저장
 }
 
 export function removeEvent(element, eventType) {
-  if (eventMap.has(element)) {
-    const elementHandlers = eventMap.get(element);
-    delete elementHandlers[eventType]; // 해당 이벤트 타입의 핸들러 제거
+  if (!eventMap.has(element)) return;
+
+  const elementEvents = eventMap.get(element);
+  elementEvents.delete(eventType);
+
+  if (elementEvents.size === 0) {
+    eventMap.delete(element);
   }
 }
