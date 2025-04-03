@@ -1,5 +1,6 @@
 import { addEvent } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
+import { normalizeAttribute } from "../utils/index.js";
 
 export function createElement(vNode) {
   if (
@@ -42,9 +43,9 @@ function updateAttributes($el, props) {
   Object.entries(props).forEach(([attr, value]) => {
     if (value == null || value === false) return;
 
-    if (attr.toLowerCase() === "classname") {
-      $el.setAttribute("class", value);
-    } else if (attr.startsWith("on")) {
+    attr = normalizeAttribute(attr);
+
+    if (attr.startsWith("on")) {
       if (typeof value === "function") {
         const eventType = attr.slice(2).toLowerCase();
         addEvent($el, eventType, value);

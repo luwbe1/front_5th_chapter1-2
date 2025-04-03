@@ -1,5 +1,6 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
+import { normalizeAttribute } from "../utils/index.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
   for (const [attr, value] of Object.entries(originNewProps)) {
@@ -12,10 +13,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
       removeEvent(target, eventType, originOldProps[attr]);
       addEvent(target, eventType, value);
     } else {
-      target.setAttribute(
-        attr.toLowerCase() === "classname" ? "class" : attr,
-        value,
-      );
+      target.setAttribute(normalizeAttribute(attr), value);
     }
   }
 
@@ -25,9 +23,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
         const eventType = attr.slice(2).toLowerCase();
         removeEvent(target, eventType, originOldProps[attr]);
       } else {
-        target.removeAttribute(
-          attr.toLowerCase() === "classname" ? "class" : attr,
-        );
+        target.removeAttribute(normalizeAttribute(attr));
       }
     }
   }
