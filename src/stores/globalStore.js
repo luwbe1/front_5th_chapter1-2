@@ -53,35 +53,35 @@ export const globalStore = createStore(
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
     },
-    addPost(state, content) {
+    createPost(state, content) {
       const newPost = {
         id: state.posts.length + 1,
-        author: state.currentUser?.username,
+        author: state.currentUser?.username || "익명",
         time: Date.now(),
         content,
         likeUsers: [],
       };
       return { ...state, posts: [...state.posts, newPost] };
     },
-    likeUser(state, id) {
-      const postIndex = state.posts.findIndex((post) => post.id === id);
-      if (postIndex === -1) return state;
-
-      const updatedPosts = [...state.posts];
-      const post = { ...updatedPosts[postIndex] };
+    togglePostLike(state, id) {
       const username = state.currentUser?.username;
-      if (!username) return state;
-
-      // 좋아요가 이미 있다면 취소하고, 없다면 추가
-      if (post.likeUsers.includes(username)) {
-        post.likeUsers = post.likeUsers.filter((user) => user !== username);
-      } else {
-        post.likeUsers = [...post.likeUsers, username]; // push 대신 불변성 유지
+      if (!username) {
+        return state;
       }
 
-      updatedPosts[postIndex] = post;
-
-      return { ...state, posts: updatedPosts };
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post.id === id
+            ? {
+                ...post,
+                likeUsers: post.likeUsers.includes(username)
+                  ? post.likeUsers.filter((user) => user !== username) // 좋아요 취소
+                  : [...post.likeUsers, username], // 좋아요 추가
+              }
+            : post,
+        ),
+      };
     },
   },
 );

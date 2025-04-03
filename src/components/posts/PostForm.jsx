@@ -4,12 +4,12 @@ import { globalStore } from "../../stores";
 
 export const PostForm = () => {
   const { loggedIn } = globalStore.getState();
-  const { addPost } = globalStore.actions;
+  const { createPost } = globalStore.actions;
 
   const onUpload = () => {
     const content = document.getElementById("post-content").value;
     if (loggedIn) {
-      addPost(content);
+      createPost(content);
     } else {
       alert("로그인 후 이용해주세요");
     }

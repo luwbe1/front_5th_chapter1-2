@@ -12,13 +12,13 @@ export const Post = ({
   activationLike = false,
 }) => {
   const { loggedIn } = globalStore.getState();
-  const { likeUser } = globalStore.actions;
+  const { togglePostLike } = globalStore.actions;
 
   const onLikeUser = (e) => {
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
     } else {
-      likeUser(id);
+      togglePostLike(id);
     }
   };
 
