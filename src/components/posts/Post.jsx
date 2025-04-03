@@ -15,7 +15,6 @@ export const Post = ({
   const { likeUser } = globalStore.actions;
 
   const onLikeUser = (e) => {
-    e.preventDefault();
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
     } else {
