@@ -6,6 +6,9 @@ export const PostForm = () => {
   const { loggedIn } = globalStore.getState();
   const { createPost } = globalStore.actions;
 
+  /**
+   * @description 로그인된 상태에서만 게시글을 쓸 수 있다.
+   */
   const onUpload = () => {
     const content = document.getElementById("post-content").value;
     if (loggedIn) {

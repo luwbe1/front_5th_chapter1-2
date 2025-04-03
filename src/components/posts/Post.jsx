@@ -14,7 +14,10 @@ export const Post = ({
   const { loggedIn } = globalStore.getState();
   const { togglePostLike } = globalStore.actions;
 
-  const onLikeUser = (e) => {
+  /**
+   * @description 로그인된 상태에서만 좋아요를 누를 수 있다.
+   */
+  const onLikeUser = () => {
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
     } else {

@@ -7,6 +7,7 @@ import { BASE_PATH } from "../../constants/constants";
 const getNavItemClass = (path) => {
   let currentPath = window.location.pathname;
 
+  // BASE_PATH에 대한 처리
   return currentPath === BASE_PATH + path
     ? "text-blue-600 font-bold"
     : "text-gray-600";

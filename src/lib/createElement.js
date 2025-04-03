@@ -27,10 +27,14 @@ export function createElement(vNode) {
     throw new Error("createElement()에 컴포넌트를 직접 전달할 수 없습니다.");
   }
 
+  // 컴포넌트를 element로 만들기
   const normalizedNode = normalizeVNode(vNode);
   const el = document.createElement(normalizedNode.type);
+
+  // 속성 업데이트 (이벤트 핸들러 포함)
   updateAttributes(el, normalizedNode.props);
 
+  // 자식 노드 생성 및 추가
   const children = normalizedNode.children.map(createElement);
   children.forEach((child) => el.appendChild(child));
 
@@ -41,10 +45,13 @@ function updateAttributes($el, props) {
   if (!props) return;
 
   Object.entries(props).forEach(([attr, value]) => {
-    if (value == null || value === false) return;
+    if (value == null || value === false) {
+      return;
+    }
 
     attr = normalizeAttribute(attr);
 
+    // 이벤트 핸들러 등록
     if (attr.startsWith("on")) {
       if (typeof value === "function") {
         const eventType = attr.slice(2).toLowerCase();
